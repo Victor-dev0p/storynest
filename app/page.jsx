@@ -80,11 +80,11 @@ const Page = () => {
     <>
      <section className="min-h-dvh bg-[url('/bg.jpg')] bg-no-repeat bg-cover bg-center">
         <div className="min-h-dvh bg-black/70">
-          <div className="flex flex-col lg:p-20 md:p-7 p-3 justify-between h-[80vh]">
-            <h1 className="text-white font-bold lg:text-5xl md:text-3xl text-[1.2rem] uppercase max-md:text-center max-md:mt-">
+          <div className="flex flex-col lg:p-20 md:p-7 py-6 px-3 justify-between min-h-dvh">
+            <h1 className="text-white font-bold lg:text-5xl md:text-3xl text-2xl uppercase max-md:text-center max-md:mt-">
               Where stories take flight
             </h1>
-            <p className="text-white lg:text-2xl md:text-lg text-base max-md:text-center">
+            <p className="text-white lg:text-2xl md:text-lg text-xl max-md:text-center">
               Whether it's fiction, poetry, or real-life narratives, StoryNest
               provides a creative space for storytellers to showcase their work
               and for readers to immerse themselves in diverse tales from around
