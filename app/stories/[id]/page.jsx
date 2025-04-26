@@ -1,4 +1,5 @@
 "use client";
+import { useState, useEffect } from "react";
 import { db } from "@/Lib/firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
 import { RiLoader2Fill } from "react-icons/ri";
@@ -6,7 +7,6 @@ import { formatDistanceToNow } from "date-fns";
 
 const handleSingleFetch = async (id) => {
   if (!id) return null;
-
   try {
     const storyRef = doc(db, "stories", id);
     const storyDoc = await getDoc(storyRef);
@@ -24,30 +24,44 @@ const handleSingleFetch = async (id) => {
   }
 };
 
-// 🔥 Handles all possible timestamp types
 const getFormattedTimestamp = (timestamp) => {
   let date;
-
   if (timestamp?.seconds) {
     date = new Date(timestamp.seconds * 1000);
   } else if (typeof timestamp === "string" || timestamp instanceof Date) {
     date = new Date(timestamp);
   }
-
   if (date && !isNaN(date)) {
     return formatDistanceToNow(date, { addSuffix: true });
   }
-
   return "Unknown";
 };
 
-const StoryDetails = async ({ params }) => {
-  const story = await handleSingleFetch(params.id);
+const StoryDetails = ({ params }) => {
+  const [story, setStory] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchStory = async () => {
+      const fetchedStory = await handleSingleFetch(params.id);
+      setStory(fetchedStory);
+      setLoading(false);
+    };
+    fetchStory();
+  }, [params.id]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-dvh">
+        <RiLoader2Fill className="text-4xl animate-spin text-purple-600" />
+      </div>
+    );
+  }
 
   if (!story) {
     return (
       <div className="flex items-center justify-center h-dvh">
-        <RiLoader2Fill className="text-4xl animate-spin" />
+        <p className="text-gray-600">Story not found.</p>
       </div>
     );
   }
