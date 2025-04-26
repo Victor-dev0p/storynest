@@ -19,9 +19,8 @@ const UploadStory = ({ session }) => {
   const [processing, setProcessing] = useState(false);
   const [modalVisibility, setModalVisibility] = useState(false);
 
-  const userId = session?.user?.id
-  // console.log(userId);
-  // console.log(session);
+  const userId = session?.user?.id;
+
   const handleSubmit = async (values, { resetForm }) => {
     try {
       setProcessing(true);
@@ -32,7 +31,8 @@ const UploadStory = ({ session }) => {
         genre: values.genre,
         author: session?.user?.name,
         timestamp: new Date().toLocaleDateString(),
-        userId
+        userId,
+        likes: 0, // 🔥 Added likes field here
       };
       const storyRef = await addDoc(collection(db, "stories"), storyDoc);
       console.log(storyRef.id);
