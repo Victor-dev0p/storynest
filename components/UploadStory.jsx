@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "@/Lib/firebaseConfig";
 import { BiLoaderCircle } from "react-icons/bi";
 import { FaRegCheckCircle } from "react-icons/fa";
@@ -30,7 +30,7 @@ const UploadStory = ({ session }) => {
         body: values.body,
         genre: values.genre,
         author: session?.user?.name,
-        timestamp: new Date().toLocaleDateString(),
+        timestamp: serverTimestamp(),
         userId,
         likes: 0, // 🔥 Added likes field here
       };

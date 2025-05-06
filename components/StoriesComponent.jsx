@@ -54,7 +54,9 @@ const StoriesComponent = ({ session }) => {
     setLoading(true);
     try {
       const storyData = [];
-      const querySnapshot = await getDocs(collection(db, "stories"));
+      const storiesRef = collection(db, "stories");
+      const q = query(storiesRef, orderBy("timestamp", "desc")); // 👈 ORDER BY timestamp DESC
+      const querySnapshot = await getDocs(q);
       querySnapshot.forEach((doc) => {
         storyData.push({ id: doc.id, ...doc.data() });
       });

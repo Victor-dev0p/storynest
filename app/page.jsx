@@ -94,7 +94,7 @@ const Page = () => {
             </p>
             <div className="md:space-x-5 max-md:flex flex-col gap-5">
               <Link
-                href={"#"}
+                href={session ? "/upload-story" : "/auth/signin"}
                 className="bg-blue-600 text-white md:py-3 md:px-10 p-2 text-lg hover:bg-blue-500 transition-all text-center"
               >
                 Start Reading
