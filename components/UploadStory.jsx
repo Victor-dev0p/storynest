@@ -13,6 +13,11 @@ const valSchema = Yup.object({
     .required("Please tell your story")
     .min(10, "Minimum of 10 characters"),
   genre: Yup.string().required("Please select a genre"),
+  storyId: Yup.string().optional(), // optional field to group episodes
+  episodeNumber: Yup.number()
+    .positive("Must be positive")
+    .integer("Must be an integer")
+    .optional(),
 });
 
 const UploadStory = ({ session }) => {
@@ -24,7 +29,7 @@ const UploadStory = ({ session }) => {
   const handleSubmit = async (values, { resetForm }) => {
     try {
       setProcessing(true);
-      // create an object to be sent to the db
+
       const storyDoc = {
         title: values.title,
         body: values.body,
@@ -32,10 +37,13 @@ const UploadStory = ({ session }) => {
         author: session?.user?.name,
         timestamp: serverTimestamp(),
         userId,
-        likes: 0, // 🔥 Added likes field here
+        likes: 0,
+        storyId: values.storyId || null,
+        episodeNumber: values.episodeNumber || null,
       };
+
       const storyRef = await addDoc(collection(db, "stories"), storyDoc);
-      console.log(storyRef.id);
+      console.log("Story uploaded with ID:", storyRef.id);
       resetForm();
       setModalVisibility(true);
     } catch (error) {
@@ -53,7 +61,13 @@ const UploadStory = ({ session }) => {
           Upload Your Story
         </h2>
         <Formik
-          initialValues={{ title: "", body: "", genre: "" }}
+          initialValues={{
+            title: "",
+            body: "",
+            genre: "",
+            storyId: "",
+            episodeNumber: "",
+          }}
           validationSchema={valSchema}
           onSubmit={handleSubmit}
         >
@@ -71,6 +85,7 @@ const UploadStory = ({ session }) => {
                 className="text-sm text-red-600"
               />
             </div>
+
             <div>
               <Field
                 name="body"
@@ -85,6 +100,7 @@ const UploadStory = ({ session }) => {
                 className="text-sm text-red-600"
               />
             </div>
+
             <div>
               <Field
                 name="genre"
@@ -108,6 +124,35 @@ const UploadStory = ({ session }) => {
                 className="text-sm text-red-600"
               />
             </div>
+
+            <div>
+              <Field
+                name="storyId"
+                type="text"
+                placeholder="Optional: Story ID (e.g. against-all-odds)"
+                className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+              <ErrorMessage
+                name="storyId"
+                component="p"
+                className="text-sm text-red-600"
+              />
+            </div>
+
+            <div>
+              <Field
+                name="episodeNumber"
+                type="number"
+                placeholder="Optional: Episode number (e.g. 1)"
+                className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+              <ErrorMessage
+                name="episodeNumber"
+                component="p"
+                className="text-sm text-red-600"
+              />
+            </div>
+
             <button
               disabled={processing}
               type="submit"
@@ -131,7 +176,9 @@ const UploadStory = ({ session }) => {
         }`}
       >
         <div className="md:w-[20rem] w-full h-[30vh] flex flex-col gap-5 items-center justify-center shadow-lg rounded-lg bg-white p-3">
-          <h1 className="text-black md:text-2xl text-lg">Story Upload Successful</h1>
+          <h1 className="text-black md:text-2xl text-lg">
+            Story Upload Successful
+          </h1>
           <FaRegCheckCircle className="text-6xl text-green-500" />
           <button onClick={() => setModalVisibility(false)}>Close</button>
         </div>
