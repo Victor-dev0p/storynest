@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { MdKeyboardDoubleArrowRight, MdNavigateBefore, MdNavigateNext } from "react-icons/md";
 import { IoTrashBinSharp, IoBookmark, IoBookmarkOutline, IoHeart, IoHeartOutline } from "react-icons/io5";
 import { LuClock3 } from "react-icons/lu";
-import { collection, deleteDoc, doc, getDocs, onSnapshot, setDoc, deleteDoc as deleteFirestoreDoc } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDocs, onSnapshot, setDoc, orderBy, deleteDoc as deleteFirestoreDoc } from "firebase/firestore";
 import { db } from "@/Lib/firebaseConfig";
 import Link from "next/link";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
@@ -54,9 +54,8 @@ const StoriesComponent = ({ session }) => {
     setLoading(true);
     try {
       const storyData = [];
-      const storiesRef = collection(db, "stories");
+      const querySnapshot = await getDocs(collection(db, "stories"));
       const q = query(storiesRef, orderBy("timestamp", "desc")); // 👈 ORDER BY timestamp DESC
-      const querySnapshot = await getDocs(q);
       querySnapshot.forEach((doc) => {
         storyData.push({ id: doc.id, ...doc.data() });
       });
