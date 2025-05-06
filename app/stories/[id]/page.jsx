@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { db } from "@/Lib/firebaseConfig";
 import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
+import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 
 const Skeleton = () => (
@@ -91,23 +92,23 @@ const StoryDetails = ({ params }) => {
 
             <div className="mt-10 flex justify-between items-center gap-4">
               {prev ? (
-                <a
-                  href={`/story/${prev.id}`}
+                <Link
+                 href={`/story/${prev.id}`} passHref
                   className="bg-gray-200 hover:bg-gray-300 text-sm text-gray-800 px-4 py-2 rounded-md"
                 >
                   ← Previous Episode
-                </a>
+                </Link>
               ) : (
                 <span />
               )}
 
               {next ? (
-                <a
-                  href={`/story/${next.id}`}
+                <Link
+                  href={`/story/${next.id}`} passHref
                   className="bg-blue-600 hover:bg-blue-700 text-sm text-white px-4 py-2 rounded-md"
                 >
                   Next Episode →
-                </a>
+                </Link>
               ) : (
                 <span />
               )}
