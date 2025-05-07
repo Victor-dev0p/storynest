@@ -19,11 +19,18 @@ const Skeleton = () => (
 const getFormattedTimestamp = (timestamp) => {
   let date;
   if (timestamp?.seconds) {
+    // Firestore Timestamp object
     date = new Date(timestamp.seconds * 1000);
   } else if (typeof timestamp === "string" || timestamp instanceof Date) {
+    // ISO string or Date
     date = new Date(timestamp);
+  } else {
+    return "Unknown";
   }
-  return date && !isNaN(date) ? formatDistanceToNow(date, { addSuffix: true }) : "Unknown";
+
+  return !isNaN(date.getTime())
+    ? formatDistanceToNow(date, { addSuffix: true })
+    : "Unknown";
 };
 
 const StoryDetails = ({ params }) => {
@@ -55,9 +62,9 @@ const StoryDetails = ({ params }) => {
           episodes.sort((a, b) => a.episodeNumber - b.episodeNumber);
           setEpisodeList(episodes);
         }
-
-        setLoading(false);
       }
+
+      setLoading(false);
     };
     fetchStory();
   }, [params.id]);
@@ -93,7 +100,7 @@ const StoryDetails = ({ params }) => {
             <div className="mt-10 flex justify-between items-center gap-4">
               {prev ? (
                 <Link
-                 href={`/stories/${prev.id}`} passHref
+                  href={`/stories/${prev.id}`}
                   className="bg-gray-200 hover:bg-gray-300 text-sm text-gray-800 px-4 py-2 rounded-md"
                 >
                   ← Previous Episode
@@ -104,7 +111,7 @@ const StoryDetails = ({ params }) => {
 
               {next ? (
                 <Link
-                  href={`/stories/${next.id}`} passHref
+                  href={`/stories/${next.id}`}
                   className="bg-blue-600 hover:bg-blue-700 text-sm text-white px-4 py-2 rounded-md"
                 >
                   Next Episode →
