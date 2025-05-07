@@ -93,7 +93,7 @@ const StoryDetails = ({ params }) => {
             <div className="mt-10 flex justify-between items-center gap-4">
               {prev ? (
                 <Link
-                 href={`/story/${prev.id}`} passHref
+                 href={`/stories/${prev.id}`} passHref
                   className="bg-gray-200 hover:bg-gray-300 text-sm text-gray-800 px-4 py-2 rounded-md"
                 >
                   ← Previous Episode
@@ -104,7 +104,7 @@ const StoryDetails = ({ params }) => {
 
               {next ? (
                 <Link
-                  href={`/story/${next.id}`} passHref
+                  href={`/stories/${next.id}`} passHref
                   className="bg-blue-600 hover:bg-blue-700 text-sm text-white px-4 py-2 rounded-md"
                 >
                   Next Episode →
