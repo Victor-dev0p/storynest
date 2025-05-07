@@ -19,10 +19,8 @@ const Skeleton = () => (
 const getFormattedTimestamp = (timestamp) => {
   let date;
   if (timestamp?.seconds) {
-    // Firestore Timestamp object
     date = new Date(timestamp.seconds * 1000);
   } else if (typeof timestamp === "string" || timestamp instanceof Date) {
-    // ISO string or Date
     date = new Date(timestamp);
   } else {
     return "Unknown";
@@ -54,11 +52,18 @@ const StoryDetails = ({ params }) => {
           );
           const querySnap = await getDocs(q);
           const episodes = [];
+
           querySnap.forEach((doc) => {
-            episodes.push({ id: doc.id, ...doc.data() });
+            const rawData = doc.data();
+            const sanitized = {
+              ...rawData,
+              timestamp: rawData.timestamp?.seconds
+                ? new Date(rawData.timestamp.seconds * 1000)
+                : rawData.timestamp || null,
+            };
+            episodes.push({ id: doc.id, ...sanitized });
           });
 
-          // Sort episodes by episodeNumber
           episodes.sort((a, b) => a.episodeNumber - b.episodeNumber);
           setEpisodeList(episodes);
         }
@@ -66,6 +71,7 @@ const StoryDetails = ({ params }) => {
 
       setLoading(false);
     };
+
     fetchStory();
   }, [params.id]);
 
