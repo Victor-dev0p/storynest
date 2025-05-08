@@ -29,7 +29,7 @@ const getFormattedTimestamp = (timestamp) => {
     let date;
 
     if (timestamp.seconds && timestamp.nanoseconds) {
-      date = new Date(timestamp.seconds * 1000);
+      date = new Date(timestamp.seconds * 10000);
     } else if (typeof timestamp === "string" || timestamp instanceof Date) {
       date = new Date(timestamp);
     }
