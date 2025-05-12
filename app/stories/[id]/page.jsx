@@ -91,23 +91,23 @@ const StoryDetails = ({ params }) => {
 
             <div className="mt-10 flex justify-between items-center gap-4">
               {prev ? (
-                <a
+                <Link
                   href={`/story/${prev.id}`}
                   className="bg-gray-200 hover:bg-gray-300 text-sm text-gray-800 px-4 py-2 rounded-md"
                 >
                   ← Previous Episode
-                </a>
+                </Link>
               ) : (
                 <span />
               )}
 
               {next ? (
-                <a
+                <Link
                   href={`/story/${next.id}`}
                   className="bg-blue-600 hover:bg-blue-700 text-sm text-white px-4 py-2 rounded-md"
                 >
                   Next Episode →
-                </a>
+                </Link>
               ) : (
                 <span />
               )}
