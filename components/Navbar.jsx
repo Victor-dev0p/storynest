@@ -89,6 +89,9 @@ const Navbar = () => {
                   <Link href="/upload-story">Upload Story</Link>
                 </MenuItem>
                 <MenuItem onClick={handleClose}>
+                  <Link href="/bookmarks">My Bookmarks</Link>
+                </MenuItem>
+                <MenuItem onClick={handleClose}>
                   <button onClick={() => signOut()}>Sign Out</button>
                 </MenuItem>
               </Menu>
