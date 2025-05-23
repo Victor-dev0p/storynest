@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { db } from "@/Lib/firebaseConfig";
 import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
 import { formatDistanceToNow } from "date-fns";
+import Link from "next/link";
 
 const Skeleton = () => (
   <div className="animate-pulse space-y-4">
@@ -22,7 +23,7 @@ const getFormattedTimestamp = (timestamp) => {
   } else if (typeof timestamp === "string" || timestamp instanceof Date) {
     date = new Date(timestamp);
   }
-  return date && !isNaN(date) ? formatDistanceToNow(date, { addSuffix: true }) : "Unknown";
+  return date && !isNaN(date) ? formatDistanceToNow(date, { addSuffix: true }) : "Unknown"; 
 };
 
 const StoryDetails = ({ params }) => {
@@ -32,42 +33,54 @@ const StoryDetails = ({ params }) => {
 
   useEffect(() => {
     const fetchStory = async () => {
-      const storyRef = doc(db, "stories", params.id);
-      const storySnap = await getDoc(storyRef);
+      try {
+        const storyRef = doc(db, "stories", params.id);
+        const storySnap = await getDoc(storyRef);
 
-      if (storySnap.exists()) {
-        const data = { id: storySnap.id, ...storySnap.data() };
-        setStory(data);
+        if (!storySnap.exists()) {
+          setLoading(false);
+          return;
+        }
 
-        if (data.storyId) {
-          const q = query(
-            collection(db, "stories"),
-            where("storyId", "==", data.storyId)
-          );
+        const storyData = { id: storySnap.id, ...storySnap.data() };
+        setStory(storyData);
+
+        if (storyData.storyId) {
+          const q = query(collection(db, "stories"), where("storyId", "==", storyData.storyId));
           const querySnap = await getDocs(q);
+
           const episodes = [];
           querySnap.forEach((doc) => {
-            episodes.push({ id: doc.id, ...doc.data() });
+            const data = doc.data();
+            if (data.episodeNumber !== undefined && data.episodeNumber !== null) {
+              episodes.push({ id: doc.id, ...data });
+            }
           });
 
-          // Sort episodes by episodeNumber
           episodes.sort((a, b) => a.episodeNumber - b.episodeNumber);
           setEpisodeList(episodes);
         }
 
         setLoading(false);
+      } catch (error) {
+        console.error("Error fetching story:", error);
+        setLoading(false);
       }
     };
-    fetchStory();
+
+    if (params.id) {
+      fetchStory();
+    }
   }, [params.id]);
 
   const getNavigationLinks = () => {
     if (!story || episodeList.length === 0) return { prev: null, next: null };
 
     const currentIndex = episodeList.findIndex((ep) => ep.id === story.id);
-    const prev = episodeList[currentIndex - 1];
-    const next = episodeList[currentIndex + 1];
-    return { prev, next };
+    return {
+      prev: episodeList[currentIndex - 1] || null,
+      next: episodeList[currentIndex + 1] || null,
+    };
   };
 
   const { prev, next } = getNavigationLinks();
@@ -80,10 +93,10 @@ const StoryDetails = ({ params }) => {
         ) : story ? (
           <>
             <span className="inline-block mb-4 px-3 py-1 bg-purple-600 text-white text-xs rounded-full">
-              {story.genre}
+              {story.genre || "Unknown Genre"}
             </span>
             <h1 className="text-3xl font-bold text-gray-800 mb-2">{story.title}</h1>
-            <p className="text-sm text-gray-500 mb-1">By {story.author}</p>
+            <p className="text-sm text-gray-500 mb-1">By {story.author || "Anonymous"}</p>
             <p className="text-xs text-gray-400 mb-6">
               Posted {getFormattedTimestamp(story.timestamp)}
             </p>
@@ -92,7 +105,7 @@ const StoryDetails = ({ params }) => {
             <div className="mt-10 flex justify-between items-center gap-4">
               {prev ? (
                 <Link
-                  href={`/story/${prev.id}`}
+                  href={`/stories/${prev.id}`}
                   className="bg-gray-200 hover:bg-gray-300 text-sm text-gray-800 px-4 py-2 rounded-md"
                 >
                   ← Previous Episode
@@ -103,7 +116,7 @@ const StoryDetails = ({ params }) => {
 
               {next ? (
                 <Link
-                  href={`/story/${next.id}`}
+                  href={`/stories/${next.id}`}
                   className="bg-blue-600 hover:bg-blue-700 text-sm text-white px-4 py-2 rounded-md"
                 >
                   Next Episode →

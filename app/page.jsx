@@ -132,7 +132,7 @@ const Page = () => {
               <span className="absolute top-2 left-2 bg-green-500 text-white p-1 text-xs rounded-md">
                 {story.genre}
               </span>
-              <p className="text-sm text-gray-500">Posted on {story.timestamp}</p>
+              {/* <p className="text-sm text-gray-500">Posted on {story.timestamp}</p> */}
               <Link href={`/stories/${story.id}`} className="flex items-center max-md:justify-center gap-1 border px-3 py-1 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-all ml-auto max-md:w-full w-fit">
                 Read more
                 <MdKeyboardDoubleArrowRight className="text-lg" />

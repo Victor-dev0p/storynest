@@ -35,7 +35,7 @@ const UploadStory = ({ session }) => {
         body: values.body,
         genre: values.genre,
         author: session?.user?.name,
-        timestamp: serverTimestamp(),
+        timestamp: new Date().toLocaleDateString(),
         userId,
         likes: 0,
         storyId: values.storyId || null,
